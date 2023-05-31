@@ -28,24 +28,25 @@ public class Database implements Serializable {
                 DB_PASS);
     }
 
-    public void insertBlok1(Blok1 blok1) throws SQLException {
+    public void insertBlok1(Blok1 blok1, String idPengisi) throws SQLException {
         try (Connection conn = getConnection()) {
             String insertToSQL = "INSERT INTO blok1 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             try (PreparedStatement pstmt = conn.prepareStatement(insertToSQL)) {
-                pstmt.setString(1, (String) blok1.getLokasi().getProvinsi().getValue());
-                pstmt.setString(2, (String) blok1.getLokasi().getKabupaten().getValue());
-                pstmt.setString(3, (String) blok1.getLokasi().getKecamatan().getValue());
-                pstmt.setString(4, (String) blok1.getLokasi().getDesa().getValue());
-                pstmt.setString(5, (String) blok1.getLokasi().getSLS().getValue());
-                pstmt.setString(6, (String) blok1.getLokasi().getSubSLS().getValue());
-                pstmt.setString(7, (String) blok1.getLokasi().getNamaSLS().getValue());
-                pstmt.setString(8, (String) blok1.getLokasi().getLokasiPendataan().getValue());
-                pstmt.setString(9, (String) blok1.getKeluarga().getKelompokKK().getValue());
-                pstmt.setString(10, (String) blok1.getKeluarga().getNamaKepalaKeluarga().getValue());
-                pstmt.setString(11, (String) blok1.getLokasi().getNoUrutBangunan().getValue());
-                pstmt.setString(12, (String) blok1.getLokasi().getNoUrutKeluarga().getValue());
-                pstmt.setString(13, (String) blok1.getKeluarga().getIDWilkerstat().getValue());
-                pstmt.setString(14, blok1.getKeyValue());
+                pstmt.setString(1, idPengisi);
+                pstmt.setString(2, (String) blok1.getLokasi().getProvinsi().getValue());
+                pstmt.setString(3, (String) blok1.getLokasi().getKabupaten().getValue());
+                pstmt.setString(4, (String) blok1.getLokasi().getKecamatan().getValue());
+                pstmt.setString(5, (String) blok1.getLokasi().getDesa().getValue());
+                pstmt.setString(6, (String) blok1.getLokasi().getSLS().getValue());
+                pstmt.setString(7, (String) blok1.getLokasi().getSubSLS().getValue());
+                pstmt.setString(8, (String) blok1.getLokasi().getNamaSLS().getValue());
+                pstmt.setString(9, (String) blok1.getLokasi().getLokasiPendataan().getValue());
+                pstmt.setString(10, (String) blok1.getKeluarga().getKelompokKK().getValue());
+                pstmt.setString(11, (String) blok1.getKeluarga().getNamaKepalaKeluarga().getValue());
+                pstmt.setString(12, (String) blok1.getLokasi().getNoUrutBangunan().getValue());
+                pstmt.setString(13, (String) blok1.getLokasi().getNoUrutKeluarga().getValue());
+                pstmt.setString(14, (String) blok1.getKeluarga().getIDWilkerstat().getValue());
+                pstmt.setString(15, blok1.getKeyValue());
                 pstmt.executeUpdate();
             } catch (SQLException e) {
                 System.out.println(e);

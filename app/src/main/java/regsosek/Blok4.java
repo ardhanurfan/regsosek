@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Blok4 {
-    private Blok1 blok1;
     private String keyValue;
     private ArrayList<Anggota> anggotas;
 
@@ -12,7 +11,6 @@ public class Blok4 {
     }
 
     public Blok4(Blok1 blok1) {
-        this.blok1 = blok1;
         this.keyValue = blok1.getKeyValue();
         this.anggotas = new ArrayList<>();
         System.out.println("Object Blok 4 Berhasil Dibuat!\n\n");

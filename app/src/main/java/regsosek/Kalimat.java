@@ -30,27 +30,24 @@ public class Kalimat<T> extends Peubah<T> {
         }
     }
 
-    public boolean constraintError(T value) {
-        try {
-            setTemp(value);
-            if (getTemp().length() > jumlahKata) {
-                throw new InputValueError(String.format("Nilai Variabel %s Salah", super.getNama()));
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-        } finally {
-            if (getTemp().length() > jumlahKata) {
-                return true;
-            }
-            return false;
+    public void constraintError(T value) throws InputValueError {
+        setTemp(value);
+        if (getTemp().length() > jumlahKata) {
+            throw new InputValueError(String.format("Nilai Variabel %s Salah", super.getNama()));
         }
     }
 
     public boolean checkError() {
-        if (emptyError(super.getValue()) || typeError(super.getValue()) || constraintError(super.getValue())) {
-            return true;
+        if (typeError(getValue())) {
+            try {
+                constraintError(super.getValue());
+                emptyError();
+            } catch (Exception e) {
+                return false;
+            }
+            return false;
         }
-        return false;
+        return true;
     }
 
     public String toString() {

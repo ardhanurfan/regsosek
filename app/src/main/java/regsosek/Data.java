@@ -5,7 +5,6 @@ import java.sql.SQLException;
 public class Data {
     private Blok1 dataBlok1;
     private Blok4 dataBlok4;
-    private Database database;
 
     public Data() {
         this.dataBlok1 = new Blok1();
@@ -21,21 +20,12 @@ public class Data {
     }
 
     public void createBlok1(Blok1 blok1) {
-        if (validation(blok1)) {
-            this.dataBlok1 = blok1;
-            System.out.println("Data Blok 1 Berhasil Dibuat!");
-        } else {
-            System.out.println("Data Blok 1 Tidak Berhasil Dibuat!");
-        }
+        this.dataBlok1 = blok1;
+
     }
 
     public void createBlok4(Blok4 blok4) {
-        if (validation(blok4)) {
-            this.dataBlok4 = blok4;
-            System.out.println("Data Blok 4 Berhasil Dibuat!");
-        } else {
-            System.out.println("Data Blok 4 Tidak Berhasil Dibuat!");
-        }
+        this.dataBlok4 = blok4;
     }
 
     public void removeBlok1() {
@@ -46,7 +36,7 @@ public class Data {
 
     public void removeAnggotaBlok4(String NIK) {
         Anggota temp = dataBlok4.searchAnggota(NIK);
-        temp = null;
+        getDataBlok4().getAnggota().remove(temp);
         System.out.println("Satu Data Anggota di Blok 4 Berhasil Dihapus!");
     }
 
@@ -55,9 +45,9 @@ public class Data {
         System.out.println("Data Blok 4 Berhasil Dihapus!");
     }
 
-    public void insertDataToDatabase() throws SQLException {
+    public void insertDataToDatabase(String userId) throws SQLException {
         try {
-            Database.getInstance().insertBlok1(getDataBlok1());
+            Database.getInstance().insertBlok1(getDataBlok1(), userId);
         } catch (SQLException e) {
             System.out.println(e);
         }
@@ -66,20 +56,5 @@ public class Data {
         } catch (SQLException e) {
             System.out.println(e);
         }
-    }
-
-    public boolean validation(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        return true;
-    }
-
-    public String tampilData() {
-        return String.format("%s\n%s\n", getDataBlok1().tampilData(), getDataBlok4().tampilData());
-    }
-
-    public String toString() {
-        return String.format("%s\n%s\n", getDataBlok1(), getDataBlok1());
     }
 }
