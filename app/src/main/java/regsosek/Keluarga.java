@@ -43,9 +43,9 @@ public class Keluarga {
 
     public boolean validation(Kode<String> kelompokKK, Kalimat<String> namaKepalaKeluarga, Kode<String> idWilkerstat) {
         namaKepalaKeluarga.checkError();
-        idWilkerstat.checkError();
+        idWilkerstat.checkError(true);
         kelompokKK.checkError();
-        if (!(namaKepalaKeluarga.checkError() || idWilkerstat.checkError() || kelompokKK.checkError())) {
+        if (!(namaKepalaKeluarga.checkError() || idWilkerstat.checkError(true) || kelompokKK.checkError())) {
             System.out.println("Validasi Sukses! Object Keluarga Akan Dibuat!");
             return true;
         } else {

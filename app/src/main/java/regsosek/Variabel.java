@@ -14,5 +14,5 @@ public interface Variabel<T> {
         public void setValue(T value);
 
         // public String validationError(Exception e);
-        public void emptyError();
+        public boolean emptyError(T value);
 }

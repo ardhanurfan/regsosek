@@ -45,8 +45,8 @@ public class Kode<T> extends Peubah<T> {
         return length;
     }
 
-    public boolean typeError() {
-        if (getValue() instanceof String) {
+    public boolean typeError(T value) {
+        if (value instanceof String) {
             return false;
         } else {
             System.out.printf("Tipe Variabel %s Salah", super.getNama());
@@ -54,38 +54,53 @@ public class Kode<T> extends Peubah<T> {
         }
     }
 
-    public void constraintError(T value, int length) throws KodeOutOfBounds {
-        setTemp(value);
-        if (getTemp().length() > length) {
-            throw new KodeOutOfBounds(String.format("Nilai Variabel %s Salah", super.getNama()));
+    public boolean constraintError(T value, int length) {
+        try {
+            setTemp(value);
+            if (getTemp().length() > length) {
+                throw new KodeOutOfBounds(String.format("Nilai Variabel %s Salah", super.getNama()));
+            }
+        } catch (KodeOutOfBounds e) {
+            System.out.println(e);
+        } finally {
+            if (getTemp().length() <= length) {
+                return false;
+            }
+            return true;
         }
-
     }
 
-    public boolean constraintError(T value, HashMap<String, String> mapList, int length)
-            throws InputValueError, KodeOutOfBounds {
-        setTemp(value);
-        if (mapList != null && !mapList.containsKey(getTemp())) {
-            throw new InputValueError(String.format("Nilai Variabel %s Salah", super.getNama()));
+    public boolean constraintError(T value, HashMap<String, String> mapList, int length) {
+        try {
+            setTemp(value);
+            if (!mapList.containsKey(getTemp())) {
+                throw new InputValueError(String.format("Nilai Variabel %s Salah", super.getNama()));
+            }
+            if (getTemp().length() > length) {
+                throw new KodeOutOfBounds(String.format("Nilai Variabel %s Salah", super.getNama()));
+            }
+        } catch (InputValueError e) {
+            System.out.println(e);
+        } catch (KodeOutOfBounds e) {
+            System.out.println(e);
+        } finally {
+            if (mapList.containsKey(getTemp()) && getTemp().length() <= length) {
+                return false;
+            }
+            return true;
         }
-        if (getTemp().length() > length) {
-            throw new KodeOutOfBounds(String.format("Nilai Variabel %s Salah", super.getNama()));
-        }
+    }
 
+    public boolean checkError(boolean identifier) {
+        if (emptyError(super.getValue()) || typeError(super.getValue())
+                || constraintError(super.getValue(), getLength())) {
+            return true;
+        }
         return false;
     }
 
     public boolean checkError() {
-        if (typeError()) {
-            return true;
-        }
-        try {
-            if (constraintError(super.getValue(), getKamusKode(), getLength())) {
-                return true;
-            }
-            emptyError();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (typeError(super.getValue()) || constraintError(super.getValue(), getKamusKode(), getLength())) {
             return true;
         }
         return false;

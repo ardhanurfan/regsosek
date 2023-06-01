@@ -207,15 +207,15 @@ public class Anggota {
         // System.out.println(HubunganKeluarga.checkError());
         // System.out.println(Umur.checkError());
         // System.out.println(Ijazah.checkError());
-        if (!(NoUrut.checkError() || Nama.checkError() || NIK.checkError() || jenisKelamin.checkError()
+        if (!(NoUrut.checkError(true) || Nama.checkError() || NIK.checkError(true) || jenisKelamin.checkError()
                 || HubunganKeluarga.checkError() || Umur.checkError() || Ijazah.checkError())) {
             System.out.println("Validasi Data Diri Sukses!");
             return true;
         } else {
             System.out.println("Validasi Data Diri Gagal! Berikut Variabel yang Salah: ");
-            NoUrut.checkError();
+            NoUrut.checkError(true);
             Nama.checkError();
-            NIK.checkError();
+            NIK.checkError(true);
             jenisKelamin.checkError();
             HubunganKeluarga.checkError();
             Umur.checkError();

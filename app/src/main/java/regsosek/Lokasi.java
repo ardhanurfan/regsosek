@@ -130,22 +130,20 @@ public class Lokasi {
             Kode<String> SLS, Kode<String> SubSLS,
             Kalimat<String> NamaSLS, Kalimat<String> LokasiPendataan, Kode<String> NoUrutBangunan,
             Kode<String> NoUrutKeluarga) {
-
-        System.out.println(NamaSLS.checkError());
-        System.out.println(LokasiPendataan.checkError());
-        System.out.println(Provinsi.checkError());
-        System.out.println(Kabupaten.checkError());
-        System.out.println(Kecamatan.checkError());
-        System.out.println(Desa.checkError());
-        System.out.println(SubSLS.checkError());
-        System.out.println(SLS.checkError());
-        System.out.println(NoUrutBangunan.checkError());
-        System.out.println(NoUrutKeluarga.checkError());
-
-        if (!(NamaSLS.checkError() || LokasiPendataan.checkError() || Provinsi.checkError()
-                || Kabupaten.checkError() || Kecamatan.checkError() || Desa.checkError()
-                || SLS.checkError() ||
-                SubSLS.checkError() || NoUrutBangunan.checkError() || NoUrutKeluarga.checkError())) {
+        Provinsi.checkError(true);
+        Kabupaten.checkError(true);
+        Kecamatan.checkError(true);
+        Desa.checkError(true);
+        SLS.checkError(true);
+        SubSLS.checkError(true);
+        NamaSLS.checkError();
+        LokasiPendataan.checkError();
+        NoUrutBangunan.checkError(true);
+        NoUrutKeluarga.checkError(true);
+        if (!(NamaSLS.checkError() || LokasiPendataan.checkError() || Provinsi.checkError(true)
+                || Kabupaten.checkError(true) || Kecamatan.checkError(true) || Desa.checkError(true)
+                || SLS.checkError(true) ||
+                SubSLS.checkError(true) || NoUrutBangunan.checkError(true) || NoUrutKeluarga.checkError(true))) {
             System.out.println("Validasi Sukses! Object Lokasi Akan Dibuat!");
             return true;
         } else {

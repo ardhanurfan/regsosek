@@ -52,24 +52,27 @@ public class Angka<T> extends Peubah<T> {
         }
     }
 
-    public void constraintError(T value) throws InputValueError {
-        setTemp(value);
-        if (getTempp() <= getMinimal()) {
-            throw new InputValueError(String.format("Nilai Variabel %s Salah", super.getNama()));
+    public boolean constraintError(T value) {
+        try {
+            setTemp(value);
+            if (getTempp() <= getMinimal()) {
+                throw new InputValueError(String.format("Nilai Variabel %s Salah", super.getNama()));
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        } finally {
+            if (getTempp() > getMinimal()) {
+                return false;
+            }
+            return true;
         }
     }
 
     public boolean checkError() {
-        if (typeError(getValue())) {
-            try {
-                constraintError(super.getValue());
-                emptyError();
-            } catch (Exception e) {
-                return false;
-            }
-            return false;
+        if (emptyError(super.getValue()) || typeError(super.getValue()) || constraintError(super.getValue())) {
+            return true;
         }
-        return true;
+        return false;
     }
 
     public String toString() {

@@ -265,7 +265,8 @@ public class UI {
         urut_keluarga = new FormField(this, 2, 4, 780, 400, "No Urut Keluarga", true);
         id_wilkerstat = new FormField(this, 2, 6, 780, 450, "ID Wilkerstat", true);
 
-        new JGradientButton(bgPanel[2], 1920 * 3 / 8 - 250 / 2, 570, 250, 50, "Selanjutnya", 20, "page-blok4",
+        new JGradientButton(bgPanel[2], 1920 * 3 / 8 - 250 / 2, 570, 250, 50, "Selanjutnya", 20,
+                "page-blok4-from-blok1",
                 am.actionHandler);
 
         bgPanel[2].add(buttonHome);

@@ -38,17 +38,23 @@ public abstract class Peubah<T> implements Variabel<T> {
         this.value = value;
     }
 
-    public void emptyError() throws NullPointerException {
-        if (getValue() == null) {
-            throw new NullPointerException(String.format("Nilai Variabel %S Kosong", getNama()));
+    public boolean emptyError(T value) {
+        try {
+            if (getValue() == null) {
+                throw new NullPointerException(String.format("Nilai Variabel %S Kosong", getNama()));
+            }
+        } catch (NullPointerException e) {
+            System.out.println(e);
+        } finally {
+            if (getValue() == null) {
+                return true;
+            }
+            return false;
         }
-
     }
 
     public boolean checkValue() {
-        try {
-            emptyError();
-        } catch (Exception e) {
+        if (emptyError(getValue())) {
             return false;
         }
         return true;
