@@ -39,15 +39,16 @@ public class Kalimat<T> extends Peubah<T> {
 
     public boolean checkError() {
         if (typeError(getValue())) {
-            try {
-                constraintError(super.getValue());
-                emptyError();
-            } catch (Exception e) {
-                return false;
-            }
-            return false;
+            return true;
         }
-        return true;
+        try {
+            constraintError(super.getValue());
+            emptyError();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return true;
+        }
+        return false;
     }
 
     public String toString() {

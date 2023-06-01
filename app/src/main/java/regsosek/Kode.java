@@ -65,44 +65,30 @@ public class Kode<T> extends Peubah<T> {
     public boolean constraintError(T value, HashMap<String, String> mapList, int length)
             throws InputValueError, KodeOutOfBounds {
         setTemp(value);
-        if (!mapList.containsKey(getTemp())) {
+        if (mapList != null && !mapList.containsKey(getTemp())) {
             throw new InputValueError(String.format("Nilai Variabel %s Salah", super.getNama()));
         }
         if (getTemp().length() > length) {
             throw new KodeOutOfBounds(String.format("Nilai Variabel %s Salah", super.getNama()));
         }
 
-        if (mapList.containsKey(getTemp()) && getTemp().length() <= length) {
-            return false;
-        }
-        return true;
-
-    }
-
-    public boolean checkError(boolean identifier) {
-        if (typeError()) {
-            try {
-                constraintError(super.getValue(), getLength());
-                emptyError();
-            } catch (Exception e) {
-                return false;
-            }
-            return false;
-        }
-        return true;
+        return false;
     }
 
     public boolean checkError() {
         if (typeError()) {
-            try {
-                constraintError(super.getValue(), getKamusKode(), getLength());
-                emptyError();
-            } catch (Exception e) {
-                return false;
-            }
-            return false;
+            return true;
         }
-        return true;
+        try {
+            if (constraintError(super.getValue(), getKamusKode(), getLength())) {
+                return true;
+            }
+            emptyError();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return true;
+        }
+        return false;
     }
 
     public String getValueKode() {
