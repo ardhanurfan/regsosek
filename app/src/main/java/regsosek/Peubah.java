@@ -42,7 +42,7 @@ public abstract class Peubah<T> implements Variabel<T> {
 
     public boolean emptyError(T value) {
         try {
-            if (getValue() == null) {
+            if (getValue() == null || getValue().equals("")) {
                 JOptionPane.showMessageDialog(null, String.format("Nilai Variabel %s Kosong", getNama()));
                 throw new NullPointerException(String.format("Nilai Variabel %S Kosong", getNama()));
             }
