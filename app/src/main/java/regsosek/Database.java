@@ -2,6 +2,12 @@ package regsosek;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JOptionPane;
+
+import at.favre.lib.crypto.bcrypt.BCrypt;
+
 import java.sql.*;
 
 public class Database implements Serializable {
@@ -28,11 +34,11 @@ public class Database implements Serializable {
                 DB_PASS);
     }
 
-    public void insertBlok1(Blok1 blok1, String idPengisi) throws SQLException {
+    public void insertBlok1(Blok1 blok1, int idPengisi) throws SQLException {
         try (Connection conn = getConnection()) {
-            String insertToSQL = "INSERT INTO blok1 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            String insertToSQL = "INSERT INTO blok1 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             try (PreparedStatement pstmt = conn.prepareStatement(insertToSQL)) {
-                pstmt.setString(1, idPengisi);
+                pstmt.setInt(1, idPengisi);
                 pstmt.setString(2, (String) blok1.getLokasi().getProvinsi().getValue());
                 pstmt.setString(3, (String) blok1.getLokasi().getKabupaten().getValue());
                 pstmt.setString(4, (String) blok1.getLokasi().getKecamatan().getValue());
@@ -90,6 +96,92 @@ public class Database implements Serializable {
         });
     }
 
+    public boolean register(String nama, String alamat, String email, String password) throws SQLException {
+        try (Connection conn = getConnection()) {
+            String viewSQL = "SELECT * FROM user WHERE user.Email = '" + email + "'";
+            try (Statement stmt = conn.createStatement()) {
+                try (ResultSet rs = stmt.executeQuery(viewSQL)) {
+                    if (!rs.next()) {
+                        String insertToSQL = "INSERT INTO user VALUES (?,?,?,?,?,?)";
+                        try (PreparedStatement pstmt = conn.prepareStatement(insertToSQL)) {
+                            pstmt.setInt(1, 0);
+                            pstmt.setString(2, nama);
+                            pstmt.setString(3, alamat);
+                            pstmt.setString(4, email);
+                            pstmt.setString(5, password);
+                            pstmt.setString(6, "USER");
+                            pstmt.executeUpdate();
+                        } catch (SQLException e) {
+                            System.out.println(e);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Email sudah digunakan!");
+                        return false;
+
+                    }
+                } catch (SQLException e) {
+                    System.out.println(e);
+                }
+            } catch (SQLException e) {
+                System.out.println(e);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return true;
+    }
+
+    public User login(String email, String password) throws SQLException {
+        User currUser = null;
+        try (Connection conn = getConnection()) {
+            String viewSQL = "SELECT * FROM user WHERE user.Email = '" + email + "'";
+            try (Statement stmt = conn.createStatement()) {
+                try (ResultSet rs = stmt.executeQuery(viewSQL)) {
+                    if (rs.next()) {
+                        BCrypt.Result result = BCrypt.verifyer().verify(password.toCharArray(), rs.getString(5));
+                        if (result.verified) {
+                            currUser = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
+                                    rs.getString(6));
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Password Salah!");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Akun tidak ditemukan!");
+                    }
+                    return currUser;
+                } catch (SQLException e) {
+                    System.out.println(e);
+                }
+            } catch (SQLException e) {
+                System.out.println(e);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return currUser;
+    }
+
+    public List<String[]> getDataPengisi() throws SQLException {
+        List<String[]> data = new ArrayList<String[]>();
+        try (Connection conn = getConnection()) {
+            String viewSQL = "SELECT Nama, Email, Alamat, count(user.id) FROM user INNER JOIN blok1 ON user.id=blok1.idPengisi GROUP BY user.id";
+            try (Statement stmt = conn.createStatement()) {
+                try (ResultSet rs = stmt.executeQuery(viewSQL)) {
+                    while (rs.next()) {
+                        data.add(new String[] { rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4) });
+                    }
+                } catch (SQLException e) {
+                    System.out.println(e);
+                }
+            } catch (SQLException e) {
+                System.out.println(e);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return data;
+    }
+
     public void viewBlok1() throws SQLException {
         try (Connection conn = getConnection()) {
             String viewSQL = "SELECT * FROM blok1";
@@ -143,76 +235,4 @@ public class Database implements Serializable {
             System.out.println(e);
         }
     }
-    // public ArrayList<Blok1> getBlok1FromDatabase() throws SQLException{
-    // ArrayList<Blok1> databaseBlok1 = new ArrayList<>();
-    // try (Connection conn = getConnection()){
-    // String selectSQL = "SELECT * FROM blok1";
-    // try (Statement stmt = conn.createStatement()){
-    // try (ResultSet rs = stmt.executeQuery(selectSQL)){
-    // while (rs.next()){
-    // Kode<String>
-    // provinsi,kabupaten,kecamatan,desa,sls,subSLS,kelompokKK,noUrutBangunan,noUrutKeluarga,idWilkerstat;
-    // Kalimat<String> namaSLS,lokasiPendataan,namaKepala;
-    // Lokasi lokasi = new Lokasi();
-    // Keluarga keluarga = new Keluarga();
-    // Blok1 blok1 = new Blok1();
-    // lokasi.setProvinsi(rs.getString("Provinsi"));
-    // }
-    // }
-    // }
-    // }
-    // }
-    // public List<Mahasiswa> getListMahasiswa() throws SQLException{
-    // List<Mahasiswa> mhsList = new ArrayList<>();
-    // Connection conn = getConnection();
-    // try{
-    // String sql = "SELECT * FROM mahasiswa";
-    // Statement stmt = conn.createStatement();
-    // ResultSet rs = stmt.executeQuery(sql);
-    // while(rs.next()){
-    // Mahasiswa mhs = new Mahasiswa();
-    // mhs.setNim(rs.getString("nim"));
-    // mhs.setNama(rs.getString("nama"));
-    //
-    // mhs.setJenisKelamin(rs.getString("jenis_kelamin"));
-    // mhs.setUmur(rs.getInt("umur"));
-    // mhs.setAlamat(rs.getString("alamat"));
-    // mhs.setProvinsi(rs.getString("provinsi"));
-    // mhs.setHobi(new
-    // ArrayList<>(Arrays.asList(rs.getString("hobi").split(","))));
-    //
-    // mhsList.add(mhs);
-    // }
-    // }catch(SQLException ex){
-    // throw ex;
-    // } finally{
-    // if (conn!=null){
-    // conn.close();
-    // }
-    // }
-    //
-    // return mhsList;
-    // }
-
-    // public void insertMahasiswa(Mahasiswa mahasiswa) throws SQLException{
-    // Connection conn = getConnection();
-    // try{
-    // String sql="INSERT INTO mahasiswa VALUES(?,?,?,?,?,?,?)";
-    // PreparedStatement pstmt = conn.prepareStatement(sql);
-    // pstmt.setString(1, mahasiswa.getNim());
-    // pstmt.setString(2, mahasiswa.getNama());
-    // pstmt.setString(3, mahasiswa.getJenisKelamin());
-    // pstmt.setInt(4, mahasiswa.getUmur());
-    // pstmt.setString(5, mahasiswa.getAlamat());
-    // pstmt.setString(6, mahasiswa.getProvinsi());
-    // pstmt.setString(7, String.join(",", mahasiswa.getHobi()));
-    // pstmt.executeUpdate();
-    // } catch(SQLException ex){
-    // throw ex;
-    // } finally{
-    // if(conn!=null){
-    // conn.close();
-    // }
-    // }
-    // }
 }

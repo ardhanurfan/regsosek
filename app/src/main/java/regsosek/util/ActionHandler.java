@@ -4,14 +4,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
+import javax.swing.JOptionPane;
+
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import regsosek.Anggota;
 import regsosek.Angka;
 import regsosek.Blok1;
 import regsosek.Blok4;
+import regsosek.Database;
 import regsosek.Kalimat;
 import regsosek.Keluarga;
 import regsosek.Kode;
 import regsosek.Lokasi;
+import regsosek.User;
 
 public class ActionHandler implements ActionListener {
         AppManager am;
@@ -32,10 +37,52 @@ public class ActionHandler implements ActionListener {
                                 am.routing.showScreen(0);
                                 break;
                         case "login":
-                                am.routing.showScreen(4);
+                                boolean isNull1 = am.ui.email_login.getText().equals("")
+                                                && am.ui.password_login.getText().equals("");
+                                if (!isNull1) {
+                                        try {
+                                                User loginUser = Database.getInstance().login(
+                                                                am.ui.email_login.getText(),
+                                                                am.ui.password_login.getText());
+                                                am.data.setUser(loginUser);
+                                        } catch (SQLException es) {
+                                                JOptionPane.showMessageDialog(null, "Login Gagal! SQL error!");
+                                        }
+
+                                        if (am.data.getUser() != null) {
+                                                if (am.data.getUser().getRole().equals("USER")) {
+                                                        am.routing.showScreen(4);
+                                                } else {
+                                                        am.routing.showScreen(5);
+                                                }
+                                        }
+                                } else {
+                                        JOptionPane.showMessageDialog(null, "Form Tidak Boleh Kosong!");
+                                }
                                 break;
                         case "register":
-                                am.routing.showScreen(0);
+                                boolean isNull = am.ui.password_register.getText().equals("")
+                                                && am.ui.nama_register.getText().equals("")
+                                                && am.ui.email_register.getText().equals("")
+                                                && am.ui.alamat_register.getText().equals("");
+                                if (!isNull) {
+                                        boolean cek = false;
+                                        try {
+                                                String enc_pass = BCrypt.withDefaults().hashToString(12,
+                                                                am.ui.password_register.getText().toCharArray());
+                                                cek = Database.getInstance().register(am.ui.nama_register.getText(),
+                                                                am.ui.alamat_register.getText(),
+                                                                am.ui.email_register.getText(),
+                                                                enc_pass);
+                                        } catch (SQLException es) {
+                                                JOptionPane.showMessageDialog(null, "Login Gagal! SQL error!");
+                                        }
+                                        if (cek) {
+                                                am.routing.showScreen(0);
+                                        }
+                                } else {
+                                        JOptionPane.showMessageDialog(null, "Form Tidak Boleh Kosong!");
+                                }
                                 break;
                         case "page-blok4-from-blok1":
                                 // add blok 1
@@ -53,6 +100,7 @@ public class ActionHandler implements ActionListener {
                                 am.routing.showScreen(2);
                                 break;
                         case "logout":
+                                am.data.setUser(null);
                                 am.routing.showScreen(0);
                                 break;
                         case "submit":
@@ -61,9 +109,9 @@ public class ActionHandler implements ActionListener {
 
                                 // To Database
                                 try {
-                                        am.data.insertDataToDatabase("111");
-                                } catch (SQLException e1) {
-                                        e1.printStackTrace();
+                                        am.data.insertDataToDatabase(am.data.getUser().getId());
+                                } catch (SQLException e2) {
+                                        JOptionPane.showMessageDialog(null, "Submit Gagal! SQL error!");
                                 }
 
                                 am.routing.showScreen(4);

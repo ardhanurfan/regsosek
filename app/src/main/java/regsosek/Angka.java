@@ -1,5 +1,7 @@
 package regsosek;
 
+import javax.swing.JOptionPane;
+
 public class Angka<T> extends Peubah<T> {
     final private String type = "ANGKA";
     private int minimal;
@@ -56,6 +58,7 @@ public class Angka<T> extends Peubah<T> {
         try {
             setTemp(value);
             if (getTempp() <= getMinimal()) {
+                JOptionPane.showMessageDialog(null, String.format("Nilai Variabel %s Salah", super.getNama()));
                 throw new InputValueError(String.format("Nilai Variabel %s Salah", super.getNama()));
             }
         } catch (Exception e) {

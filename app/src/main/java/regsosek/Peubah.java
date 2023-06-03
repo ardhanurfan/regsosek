@@ -1,5 +1,7 @@
 package regsosek;
 
+import javax.swing.JOptionPane;
+
 public abstract class Peubah<T> implements Variabel<T> {
     private String nama;
     private String id;
@@ -41,6 +43,7 @@ public abstract class Peubah<T> implements Variabel<T> {
     public boolean emptyError(T value) {
         try {
             if (getValue() == null) {
+                JOptionPane.showMessageDialog(null, String.format("Nilai Variabel %s Kosong", getNama()));
                 throw new NullPointerException(String.format("Nilai Variabel %S Kosong", getNama()));
             }
         } catch (NullPointerException e) {

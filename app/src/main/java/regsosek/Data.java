@@ -5,6 +5,7 @@ import java.sql.SQLException;
 public class Data {
     private Blok1 dataBlok1;
     private Blok4 dataBlok4;
+    private User user;
 
     public Data() {
         this.dataBlok1 = new Blok1();
@@ -17,6 +18,14 @@ public class Data {
 
     public Blok4 getDataBlok4() {
         return dataBlok4;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public void createBlok1(Blok1 blok1) {
@@ -45,7 +54,7 @@ public class Data {
         System.out.println("Data Blok 4 Berhasil Dihapus!");
     }
 
-    public void insertDataToDatabase(String userId) throws SQLException {
+    public void insertDataToDatabase(int userId) throws SQLException {
         try {
             Database.getInstance().insertBlok1(getDataBlok1(), userId);
         } catch (SQLException e) {

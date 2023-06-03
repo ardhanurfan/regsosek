@@ -1,5 +1,7 @@
 package regsosek;
 
+import javax.swing.JOptionPane;
+
 public class Kalimat<T> extends Peubah<T> {
     final private String type = "KALIMAT";
     final int jumlahKata = 1000;
@@ -34,6 +36,7 @@ public class Kalimat<T> extends Peubah<T> {
         try {
             setTemp(value);
             if (getTemp().length() > jumlahKata) {
+                JOptionPane.showMessageDialog(null, String.format("Nilai Variabel %s Salah", super.getNama()));
                 throw new InputValueError(String.format("Nilai Variabel %s Salah", super.getNama()));
             }
         } catch (Exception e) {

@@ -2,6 +2,8 @@ package regsosek;
 
 import java.util.HashMap;
 
+import javax.swing.JOptionPane;
+
 class KodeOutOfBounds extends Exception {
     public KodeOutOfBounds(String message) {
         super(message);
@@ -58,6 +60,7 @@ public class Kode<T> extends Peubah<T> {
         try {
             setTemp(value);
             if (getTemp().length() > length) {
+                JOptionPane.showMessageDialog(null, String.format("Nilai Variabel %s Salah", super.getNama()));
                 throw new KodeOutOfBounds(String.format("Nilai Variabel %s Salah", super.getNama()));
             }
         } catch (KodeOutOfBounds e) {
@@ -74,9 +77,11 @@ public class Kode<T> extends Peubah<T> {
         try {
             setTemp(value);
             if (!mapList.containsKey(getTemp())) {
+                JOptionPane.showMessageDialog(null, String.format("Nilai Variabel %s Salah", super.getNama()));
                 throw new InputValueError(String.format("Nilai Variabel %s Salah", super.getNama()));
             }
             if (getTemp().length() > length) {
+                JOptionPane.showMessageDialog(null, String.format("Nilai Variabel %s Salah", super.getNama()));
                 throw new KodeOutOfBounds(String.format("Nilai Variabel %s Salah", super.getNama()));
             }
         } catch (InputValueError e) {

@@ -9,14 +9,21 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+
+import regsosek.Database;
 
 public class UI {
     AppManager am;
@@ -421,6 +428,58 @@ public class UI {
         bgPanel[4].setVisible(false);
     }
 
+    public void screenAdmin() {
+        createBackgroundFull(5, "background.png");
+
+        JLabel labelBg = new JLabel();
+        labelBg.setBounds(120, 16, 350, 48);
+        ImageIcon bgIcon = new ImageIcon(
+                new ImageIcon(getClass().getClassLoader().getResource("bg-label.png")).getImage()
+                        .getScaledInstance(350, 48, Image.SCALE_SMOOTH));
+        labelBg.setIcon(bgIcon);
+
+        JLabel labelText = new JLabel("Admin Regsosek");
+        labelText.setBounds(150, 18, 320, 42);
+        labelText.setBackground(null);
+        labelText.setForeground(Color.white);
+        labelText.setFont(font(32));
+
+        JLabel labelBlok = new JLabel("Data Pengisi");
+        labelBlok.setBounds(150, 110, 330, 40);
+        labelBlok.setBackground(null);
+        labelBlok.setForeground(Color.white);
+        labelBlok.setFont(font(32));
+
+        // TABEL
+        Object[][] data = null;
+        try {
+            List<String[]> dataList = Database.getInstance().getDataPengisi();
+            data = new Object[dataList.size()][4];
+            int i = 0;
+            for (String[] row : dataList) {
+                data[i] = (Object[]) row;
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Ambil Data Gagal! SQL Error!");
+        }
+
+        JTable jt = new JTable(data, new String[] { "Nama Lengkap", "Email", "Alamat", "Jumlah Isi" });
+        jt.setEnabled(false);
+        JScrollPane js = new JScrollPane(jt);
+        js.setBounds(150, 160, 1920 * 3 / 4 - 300, 420);
+
+        new JGradientButton(bgPanel[5], 1920 * 3 / 8 - 250 / 2, 600, 250, 50, "Logout", 20,
+                "logout",
+                am.actionHandler);
+
+        bgPanel[5].add(js);
+        bgPanel[5].add(labelBlok);
+        bgPanel[5].add(labelText);
+        bgPanel[5].add(labelBg);
+        bgPanel[5].add(bgLabel[5]);
+        bgPanel[5].setVisible(false);
+    }
+
     public void screenLogin() {
         email_login = null;
         password_login = null;
@@ -539,5 +598,6 @@ public class UI {
         screenHome();
         screenBlok1();
         screenBlok4();
+        screenAdmin();
     }
 }
